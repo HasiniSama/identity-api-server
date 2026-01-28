@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.ApplicationSharePOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Error;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetOrganizationResponse;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.GenericOrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.MetaAttributesResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationCheckResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryAttributes;
@@ -78,7 +78,7 @@ public interface OrganizationsApiService {
 
       public Response organizationsOrganizationIdDiscoveryPut(String organizationId, OrganizationDiscoveryAttributes organizationDiscoveryAttributes);
 
-      public Response organizationsOrganizationIdGet(String organizationId, Boolean includePermissions);
+      public Response organizationsOrganizationIdGet(String organizationId, Boolean includePermissions, Boolean nameOnly);
 
       public Response organizationsOrganizationIdPatch(String organizationId, List<OrganizationPatchRequestItem> organizationPatchRequestItem);
 

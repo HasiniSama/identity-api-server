@@ -180,13 +180,20 @@ paths:
             type: string
             example: 5355f3f0-f8b3-457f-805a-b32a668c5125
         - $ref: '#/components/parameters/includePermissionsQueryParam'
+        - name: name-only
+          in: query
+          description: If true, returns the extended organization response structure.
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetOrganizationResponse'
+                $ref: '#/components/schemas/GenericOrganizationResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1215,6 +1222,8 @@ components:
             $ref: '#/components/schemas/Attribute'
     GetOrganizationResponse:
       type: object
+      x-implements:
+        - GenericOrganizationResponse
       required:
         - id
         - name
@@ -1299,6 +1308,26 @@ components:
           type: string
         depth:
           type: integer
+
+    GenericOrganizationResponse:
+      x-is-one-of-interface: true
+      oneOf:
+        - $ref: '#/components/schemas/GetOrganizationResponse'
+        - $ref: '#/components/schemas/ShortOrganizationResponse'
+
+    #-----------------------------------------------------
+    # Short Organization Response Object
+    #-----------------------------------------------------
+    ShortOrganizationResponse:
+      type: object
+      x-implements:
+        - GenericOrganizationResponse
+      required:
+        - orgName
+      properties:
+        orgName:
+          type: string
+          example: 'ABC Builders'
     MetaAttributesResponse:
       type: object
       properties:

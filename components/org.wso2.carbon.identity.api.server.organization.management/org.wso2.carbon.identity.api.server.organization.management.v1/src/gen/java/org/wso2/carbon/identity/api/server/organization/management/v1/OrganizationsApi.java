@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.ApplicationSharePOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Error;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetOrganizationResponse;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.GenericOrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.MetaAttributesResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationCheckResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryAttributes;
@@ -401,23 +401,23 @@ public class OrganizationsApi  {
     @Path("/{organization-id}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Get an existing organization, identified by the organization ID.", notes = "This API is used to get an existing organization identified by the organization ID.", response = GetOrganizationResponse.class, authorizations = {
+    @ApiOperation(value = "Get an existing organization, identified by the organization ID.", notes = "This API is used to get an existing organization identified by the organization ID.", response = GenericOrganizationResponse.class, authorizations = {
         @Authorization(value = "OAuth2", scopes = {
             
         }),
         @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response", response = GetOrganizationResponse.class),
+        @ApiResponse(code = 200, message = "Successful response", response = GenericOrganizationResponse.class),
         @ApiResponse(code = 400, message = "Invalid input in the request.", response = Error.class),
         @ApiResponse(code = 401, message = "Authentication information is missing or invalid.", response = Void.class),
         @ApiResponse(code = 403, message = "Access forbidden.", response = Void.class),
         @ApiResponse(code = 404, message = "Requested resource is not found.", response = Error.class),
         @ApiResponse(code = 500, message = "Internal server error.", response = Error.class)
     })
-    public Response organizationsOrganizationIdGet(@ApiParam(value = "ID of the organization.",required=true) @PathParam("organization-id") String organizationId,     @Valid@ApiParam(value = "Returns the organization details along with permissions assigned for the requested user in this organization.", defaultValue="false") @DefaultValue("false")  @QueryParam("includePermissions") Boolean includePermissions) {
+    public Response organizationsOrganizationIdGet(@ApiParam(value = "ID of the organization.",required=true) @PathParam("organization-id") String organizationId,     @Valid@ApiParam(value = "Returns the organization details along with permissions assigned for the requested user in this organization.", defaultValue="false") @DefaultValue("false")  @QueryParam("includePermissions") Boolean includePermissions,     @Valid@ApiParam(value = "If true, returns the extended organization response structure.", defaultValue="false") @DefaultValue("false")  @QueryParam("name-only") Boolean nameOnly) {
 
-        return delegate.organizationsOrganizationIdGet(organizationId,  includePermissions );
+        return delegate.organizationsOrganizationIdGet(organizationId,  includePermissions,  nameOnly );
     }
 
     @Valid

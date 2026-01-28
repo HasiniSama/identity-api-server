@@ -36,7 +36,7 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 
-public class GetOrganizationResponse  {
+public class GetOrganizationResponse  implements GenericOrganizationResponse{
   
     private String id;
     private String name;

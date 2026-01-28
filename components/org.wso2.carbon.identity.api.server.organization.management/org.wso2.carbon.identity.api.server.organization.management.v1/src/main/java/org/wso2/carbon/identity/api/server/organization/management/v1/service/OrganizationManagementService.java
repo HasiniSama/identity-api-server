@@ -51,6 +51,7 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Pare
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.SharedApplicationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.SharedApplicationsResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.SharedOrganizationsResponse;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.ShortOrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.util.OrganizationManagementEndpointUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.organization.discovery.service.OrganizationDiscoveryManager;
@@ -211,11 +212,16 @@ public class OrganizationManagementService {
      * @param organizationId Unique identifier for the requested organization to be fetched.
      * @return Requested organization details.
      */
-    public Response getOrganization(String organizationId, Boolean includePermissions) {
+    public Response getOrganization(String organizationId, Boolean includePermissions, Boolean nameOnly) {
 
         try {
             Organization organization = organizationManager.getOrganization(organizationId,
                     false, Boolean.TRUE.equals(includePermissions), true);
+            if (nameOnly) {
+                ShortOrganizationResponse organizationResponse = new ShortOrganizationResponse();
+                organizationResponse.setOrgName(organization.getName());
+                return Response.ok().entity(organizationResponse).build();
+            }
             return Response.ok().entity(getOrganizationResponseWithPermission(organization)).build();
         } catch (OrganizationManagementClientException e) {
             return OrganizationManagementEndpointUtil.handleClientErrorResponse(e, LOG);
