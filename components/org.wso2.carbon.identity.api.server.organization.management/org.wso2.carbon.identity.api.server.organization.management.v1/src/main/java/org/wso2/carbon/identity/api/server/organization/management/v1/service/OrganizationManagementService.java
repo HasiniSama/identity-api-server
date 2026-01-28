@@ -31,6 +31,7 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetO
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetOrganizationResponseAncestorPath;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Link;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.MetaAttributesResponse;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.NewOrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationCheckResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryAttributes;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryCheckPOSTRequest;
@@ -42,6 +43,7 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Orga
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPUTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPatchRequestItem;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsDiscoveryResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsResponse;
@@ -267,14 +269,22 @@ public class OrganizationManagementService {
     /**
      * Add an organization.
      *
-     * @param organizationPOSTRequest Add organization request.
+     * @param organizationRequest Add organization request.
      * @return The newly created organization.
      */
-    public Response addOrganization(OrganizationPOSTRequest organizationPOSTRequest) {
+    public Response addOrganization(OrganizationRequest organizationRequest) {
 
         try {
-            Organization organization = organizationManager.addOrganization(getOrganizationFromPostRequest
-                    (organizationPOSTRequest));
+            Organization organization;
+            if (organizationRequest instanceof OrganizationPOSTRequest) {
+                organization = organizationManager.addOrganization(getOrganizationFromPostRequest
+                        ((OrganizationPOSTRequest) organizationRequest));
+            } else if (organizationRequest instanceof NewOrganizationPOSTRequest) {
+                organization = organizationManager.addOrganization(getOrganizationFromNewPostRequest
+                        ((NewOrganizationPOSTRequest) organizationRequest));
+            } else {
+                throw new RuntimeException();
+            }
             String organizationId = organization.getId();
             return Response.created(OrganizationManagementEndpointUtil.getResourceLocation(organizationId)).entity
                     (getOrganizationResponse(organization)).build();
@@ -677,6 +687,17 @@ public class OrganizationManagementService {
             organization.setAttributes(organizationAttributes.stream().map(attribute ->
                     new OrganizationAttribute(attribute.getKey(), attribute.getValue())).collect(Collectors.toList()));
         }
+        return organization;
+    }
+
+    private Organization getOrganizationFromNewPostRequest(NewOrganizationPOSTRequest newOrganizationPOSTRequest) {
+
+        String organizationId = generateUniqueID();
+        Organization organization = new TenantTypeOrganization(organizationId);
+        organization.setId(organizationId);
+        organization.setName(newOrganizationPOSTRequest.getNewOrgName());
+        organization.setStatus(OrganizationManagementConstants.OrganizationStatus.ACTIVE.toString());
+        organization.setType(OrganizationResponse.TypeEnum.TENANT.toString());
         return organization;
     }
 

@@ -26,7 +26,6 @@ import java.util.List;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.ApplicationSharePOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Error;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetOrganizationResponse;
-import java.util.List;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.MetaAttributesResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationCheckResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryAttributes;
@@ -37,9 +36,9 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Orga
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationMetadata;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTResponse;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPUTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPatchRequestItem;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsDiscoveryResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsResponse;
@@ -201,9 +200,9 @@ public class OrganizationsApi  {
         @ApiResponse(code = 403, message = "Access forbidden.", response = Void.class),
         @ApiResponse(code = 500, message = "Internal server error.", response = Error.class)
     })
-    public Response organizationPost(@ApiParam(value = "This represents the organization to be added." ,required=true) @Valid OrganizationPOSTRequest organizationPOSTRequest) {
+    public Response organizationPost(@ApiParam(value = "This represents the organization to be added." ,required=true) @Valid OrganizationRequest organizationRequest) {
 
-        return delegate.organizationPost(organizationPOSTRequest );
+        return delegate.organizationPost(organizationRequest );
     }
 
     @Valid

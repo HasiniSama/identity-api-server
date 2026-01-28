@@ -34,7 +34,7 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 
-public class OrganizationPOSTRequest  {
+public class OrganizationPOSTRequest  implements OrganizationRequest{
   
     private String name;
     private String orgHandle;

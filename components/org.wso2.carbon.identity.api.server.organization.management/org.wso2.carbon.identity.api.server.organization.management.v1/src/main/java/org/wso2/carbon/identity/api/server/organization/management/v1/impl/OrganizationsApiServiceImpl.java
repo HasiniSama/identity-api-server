@@ -26,9 +26,9 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Orga
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryPostRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationHandleCheckPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTRequest;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPUTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPatchRequestItem;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.service.OrganizationManagementService;
 
 import java.util.List;
@@ -143,7 +143,7 @@ public class OrganizationsApiServiceImpl implements OrganizationsApiService {
     }
 
     @Override
-    public Response organizationPost(OrganizationPOSTRequest organizationPOSTRequest) {
+    public Response organizationPost(OrganizationRequest organizationPOSTRequest) {
 
         return organizationManagementService.addOrganization(organizationPOSTRequest);
     }

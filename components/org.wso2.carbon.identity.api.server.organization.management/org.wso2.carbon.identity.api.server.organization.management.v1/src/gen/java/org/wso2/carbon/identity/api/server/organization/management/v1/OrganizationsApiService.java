@@ -37,9 +37,9 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Orga
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationMetadata;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTResponse;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPUTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPatchRequestItem;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsDiscoveryResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsResponse;
@@ -60,7 +60,7 @@ public interface OrganizationsApiService {
 
       public Response organizationMetadataGet();
 
-      public Response organizationPost(OrganizationPOSTRequest organizationPOSTRequest);
+      public Response organizationPost(OrganizationRequest organizationRequest);
 
       public Response organizationsCheckHandlePost(OrganizationHandleCheckPOSTRequest organizationHandleCheckPOSTRequest);
 

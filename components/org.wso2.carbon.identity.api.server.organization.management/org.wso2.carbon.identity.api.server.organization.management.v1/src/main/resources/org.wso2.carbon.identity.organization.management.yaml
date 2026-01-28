@@ -36,7 +36,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrganizationPOSTRequest'
+              $ref: '#/components/schemas/OrganizationRequest'
         description: This represents the organization to be added.
         required: true
       responses:
@@ -978,10 +978,17 @@ components:
           example: e0fbcfeb-3617-43c4-8dd0-7b7d38e13047
           description: An error trace identifier.
 
+    OrganizationRequest:
+      x-is-one-of-interface: true
+      oneOf:
+        - $ref: '#/components/schemas/OrganizationPOSTRequest'
+        - $ref: '#/components/schemas/NewOrganizationPOSTRequest'
     OrganizationPOSTRequest:
       type: object
       required:
         - name
+      x-implements:
+        - OrganizationRequest
       properties:
         name:
           type: string
@@ -1007,6 +1014,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attribute'
+    NewOrganizationPOSTRequest:
+      type: object
+      required:
+        - newOrgName
+      x-implements:
+        - OrganizationRequest
+      properties:
+        newOrgName:
+          type: string
+          example: "XYZ Builders"
     OrganizationPUTRequest:
       type: object
       required:
