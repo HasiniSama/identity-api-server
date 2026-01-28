@@ -1256,14 +1256,7 @@ components:
           type: array
           description: 'Ancestors up to the request initiated organization'
           items:
-            type: object
-            properties:
-              id:
-                type: string
-              name:
-                type: string
-              depth:
-                type: integer
+            $ref: '#/components/schemas/GetOrganizationResponseAncestorPath'
           example:
             [
               {
@@ -1277,6 +1270,18 @@ components:
                 "depth": 1
               }
             ]
+    #-----------------------------------------------------
+    # Organization Ancestor Path Object
+    #-----------------------------------------------------
+    GetOrganizationResponseAncestorPath:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        depth:
+          type: integer
     MetaAttributesResponse:
       type: object
       properties:
