@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.ApplicationSharePOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Error;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetOrganizationResponse;
-import java.util.List;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.GenericOrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.MetaAttributesResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationCheckResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryAttributes;
@@ -38,9 +37,9 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Orga
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationMetadata;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTResponse;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPUTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPatchRequestItem;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsDiscoveryResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsResponse;
@@ -61,7 +60,7 @@ public interface OrganizationsApiService {
 
       public Response organizationMetadataGet();
 
-      public Response organizationPost(OrganizationPOSTRequest organizationPOSTRequest);
+      public Response organizationPost(OrganizationRequest organizationRequest);
 
       public Response organizationsCheckHandlePost(OrganizationHandleCheckPOSTRequest organizationHandleCheckPOSTRequest);
 
@@ -79,7 +78,7 @@ public interface OrganizationsApiService {
 
       public Response organizationsOrganizationIdDiscoveryPut(String organizationId, OrganizationDiscoveryAttributes organizationDiscoveryAttributes);
 
-      public Response organizationsOrganizationIdGet(String organizationId, Boolean includePermissions);
+      public Response organizationsOrganizationIdGet(String organizationId, Boolean includePermissions, Boolean nameOnly);
 
       public Response organizationsOrganizationIdPatch(String organizationId, List<OrganizationPatchRequestItem> organizationPatchRequestItem);
 

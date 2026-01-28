@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Attribute;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetOrganizationResponseAncestorPath;
@@ -35,7 +36,7 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 
-public class GetOrganizationResponse  {
+public class GetOrganizationResponse  implements GenericOrganizationResponse{
   
     private String id;
     private String name;

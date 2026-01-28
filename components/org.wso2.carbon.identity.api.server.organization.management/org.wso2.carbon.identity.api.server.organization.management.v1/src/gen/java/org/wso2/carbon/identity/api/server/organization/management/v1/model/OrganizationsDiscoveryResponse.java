@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Link;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryResponse;

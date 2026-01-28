@@ -36,7 +36,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrganizationPOSTRequest'
+              $ref: '#/components/schemas/OrganizationRequest'
         description: This represents the organization to be added.
         required: true
       responses:
@@ -180,13 +180,20 @@ paths:
             type: string
             example: 5355f3f0-f8b3-457f-805a-b32a668c5125
         - $ref: '#/components/parameters/includePermissionsQueryParam'
+        - name: name-only
+          in: query
+          description: If true, returns the extended organization response structure.
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetOrganizationResponse'
+                $ref: '#/components/schemas/GenericOrganizationResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -978,10 +985,17 @@ components:
           example: e0fbcfeb-3617-43c4-8dd0-7b7d38e13047
           description: An error trace identifier.
 
+    OrganizationRequest:
+      x-is-one-of-interface: true
+      oneOf:
+        - $ref: '#/components/schemas/OrganizationPOSTRequest'
+        - $ref: '#/components/schemas/NewOrganizationPOSTRequest'
     OrganizationPOSTRequest:
       type: object
       required:
         - name
+      x-implements:
+        - OrganizationRequest
       properties:
         name:
           type: string
@@ -1007,6 +1021,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attribute'
+    NewOrganizationPOSTRequest:
+      type: object
+      required:
+        - newOrgName
+      x-implements:
+        - OrganizationRequest
+      properties:
+        newOrgName:
+          type: string
+          example: "XYZ Builders"
     OrganizationPUTRequest:
       type: object
       required:
@@ -1198,6 +1222,8 @@ components:
             $ref: '#/components/schemas/Attribute'
     GetOrganizationResponse:
       type: object
+      x-implements:
+        - GenericOrganizationResponse
       required:
         - id
         - name
@@ -1256,14 +1282,7 @@ components:
           type: array
           description: 'Ancestors up to the request initiated organization'
           items:
-            type: object
-            properties:
-              id:
-                type: string
-              name:
-                type: string
-              depth:
-                type: integer
+            $ref: '#/components/schemas/GetOrganizationResponseAncestorPath'
           example:
             [
               {
@@ -1277,6 +1296,38 @@ components:
                 "depth": 1
               }
             ]
+    #-----------------------------------------------------
+    # Organization Ancestor Path Object
+    #-----------------------------------------------------
+    GetOrganizationResponseAncestorPath:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        depth:
+          type: integer
+
+    GenericOrganizationResponse:
+      x-is-one-of-interface: true
+      oneOf:
+        - $ref: '#/components/schemas/GetOrganizationResponse'
+        - $ref: '#/components/schemas/ShortOrganizationResponse'
+
+    #-----------------------------------------------------
+    # Short Organization Response Object
+    #-----------------------------------------------------
+    ShortOrganizationResponse:
+      type: object
+      x-implements:
+        - GenericOrganizationResponse
+      required:
+        - orgName
+      properties:
+        orgName:
+          type: string
+          example: 'ABC Builders'
     MetaAttributesResponse:
       type: object
       properties:

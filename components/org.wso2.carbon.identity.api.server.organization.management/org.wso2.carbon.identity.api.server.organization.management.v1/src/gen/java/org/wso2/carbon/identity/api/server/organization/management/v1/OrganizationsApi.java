@@ -25,8 +25,7 @@ import java.util.List;
 
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.ApplicationSharePOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Error;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetOrganizationResponse;
-import java.util.List;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.GenericOrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.MetaAttributesResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationCheckResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryAttributes;
@@ -37,9 +36,9 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Orga
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationMetadata;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationNameCheckPOSTResponse;
-import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPUTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPatchRequestItem;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsDiscoveryResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsResponse;
@@ -73,10 +72,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Get organization details of the currently accessing organization.", notes = "This API retrieves the organization information associated with the currently accessing organization.  <b>Scopes (Permissions) required:</b> `internal_organization_view` ", response = OrganizationResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationResponse.class),
@@ -95,10 +94,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Check whether given discovery attribute exists among the organization hierarchy.", notes = "This API is used to verify whether a specific discovery attribute has already been associated with an organization within the hierarchy. It is available for use within any organization in the hierarchy.<br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/organizationmgt/view <br> <b>Scope required:</b> <br> * internal_organization_view", response = OrganizationDiscoveryCheckPOSTResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Discovery", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationDiscoveryCheckPOSTResponse.class),
@@ -119,10 +118,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Get discovery attributes of the organization.", notes = "This API facilitates the retrieval of discovery attributes for an organization. It currently provides the capability to retrieve these attributes only from the primary organization.<br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/organizationmgt/view <br> <b>Scope required:</b> <br> * internal_organization_view", response = OrganizationDiscoveryAttributes.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Discovery", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationDiscoveryAttributes.class),
@@ -144,10 +143,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Map discovery attributes to the organization.", notes = "This API serves the purpose of adding discovery attributes to an organization, with the current restriction that only the primary organization has the capability to perform this action.<br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/organizationmgt/update <br> <b>Scope required:</b> <br> * internal_organization_update", response = OrganizationDiscoveryAttributes.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Discovery", })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Successful response", response = OrganizationDiscoveryAttributes.class),
@@ -167,10 +166,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Get metadata of the logged in organization.", notes = "This API facilitates the retrieval of metadata including discovery attributes of the logged in organization.<br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/organizationmgt/view <br> <b>Scope required:</b> <br> * internal_organization_view", response = OrganizationMetadata.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Metadata", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationMetadata.class),
@@ -189,10 +188,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Create a new organization.", notes = "This API is used to create the organization defined in the user input.", response = OrganizationResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Successful response", response = OrganizationResponse.class),
@@ -201,9 +200,9 @@ public class OrganizationsApi  {
         @ApiResponse(code = 403, message = "Access forbidden.", response = Void.class),
         @ApiResponse(code = 500, message = "Internal server error.", response = Error.class)
     })
-    public Response organizationPost(@ApiParam(value = "This represents the organization to be added." ,required=true) @Valid OrganizationPOSTRequest organizationPOSTRequest) {
+    public Response organizationPost(@ApiParam(value = "This represents the organization to be added." ,required=true) @Valid OrganizationRequest organizationRequest) {
 
-        return delegate.organizationPost(organizationPOSTRequest );
+        return delegate.organizationPost(organizationRequest );
     }
 
     @Valid
@@ -212,10 +211,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Check organization with given handle exist among the organizations hierarchy.", notes = "This API is used to check whether organization with particular handle exist or not.", response = OrganizationCheckResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationCheckResponse.class),
@@ -236,10 +235,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Check organization with given name exist among the organizations hierarchy.", notes = "This API is used to check whether organization with particular name exist or not.", response = OrganizationNameCheckPOSTResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationNameCheckPOSTResponse.class),
@@ -260,10 +259,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Get discovery attributes of organizations.", notes = "This API facilitates the retrieval of discovery attributes of organizations in the hierarchy, allowing filtering by discovery attribute type and value. It currently provides the capability to retrieve these attributes from only the primary organization.<br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/organizationmgt/view <br> <b>Scope required:</b> <br> * internal_organization_view", response = OrganizationsDiscoveryResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Discovery", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationsDiscoveryResponse.class),
@@ -284,10 +283,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Retrieve organizations created for this tenant which matches the defined search criteria, if any.", notes = "This API is used to search and retrieve organizations created for this tenant.  Organizations can be filtered by id, name, description, created, lastModified, status, parentId, and meta attributes.   Supported operators: \"eq\" (equals), \"co\" (contains), \"sw\" (starts with), \"ew\" (ends with), \"ge\" (greater than or equals), \"le\" (less than or equals), \"gt\" (greater than), \"lt\" (less than)  Multiple attributes can be combined using the \"and\" operator.  Examples:   - filter=name+eq+ABC Builders   - filter=attributes.Country+eq+Sri Lanka  <b>Scope(Permission) required:</b> `internal_organization_view` ", response = OrganizationsResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationsResponse.class),
@@ -308,10 +307,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Get meta attributes of organizations with filter capabilities.", notes = "This API facilitates the retrieval of organization meta attributes which matches the defined search criteria, if any.  Supported operators: \"eq\"(equals), \"co\"(contains), \"sw\"(starts with), \"ew\"(ends with), \"ge\"(greater than or equals), \"le\"(less than or equals), \"gt\"(greater than), \"lt\"(less than)  Multiple filters can be combined using the \"and\" operator.  Example: filter=attributes+eq+Country  <b>Scope(Permission) required:</b> `internal_organization_view` ", response = MetaAttributesResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Meta Attributes", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = MetaAttributesResponse.class),
@@ -332,10 +331,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Delete an organization by using the organization's ID.", notes = "This API provides the capability to delete an organization by giving its ID.", response = Void.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 204, message = "Successfully deleted", response = Void.class),
@@ -356,10 +355,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Delete discovery attributes of an organization.", notes = "This API serves the purpose of deleting discovery attributes of an organization, with the current restriction that only the primary organization has the capability to perform this action.<br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/organizationmgt/update <br> <b>Scope required:</b> <br> * internal_organization_update", response = Void.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Discovery", })
     @ApiResponses(value = { 
         @ApiResponse(code = 204, message = "Successfully deleted", response = Void.class),
@@ -379,10 +378,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Update discovery attributes of an organization.", notes = "This API serves the purpose of updating discovery attributes of an organization, with the current restriction that only the primary organization has the capability to perform this action.<br> <b>Permission required:</b> <br> * /permission/admin/manage/identity/organizationmgt/update <br> <b>Scope required:</b> <br> * internal_organization_update", response = OrganizationDiscoveryAttributes.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Discovery", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationDiscoveryAttributes.class),
@@ -402,23 +401,23 @@ public class OrganizationsApi  {
     @Path("/{organization-id}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Get an existing organization, identified by the organization ID.", notes = "This API is used to get an existing organization identified by the organization ID.", response = GetOrganizationResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
+    @ApiOperation(value = "Get an existing organization, identified by the organization ID.", notes = "This API is used to get an existing organization identified by the organization ID.", response = GenericOrganizationResponse.class, authorizations = {
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response", response = GetOrganizationResponse.class),
+        @ApiResponse(code = 200, message = "Successful response", response = GenericOrganizationResponse.class),
         @ApiResponse(code = 400, message = "Invalid input in the request.", response = Error.class),
         @ApiResponse(code = 401, message = "Authentication information is missing or invalid.", response = Void.class),
         @ApiResponse(code = 403, message = "Access forbidden.", response = Void.class),
         @ApiResponse(code = 404, message = "Requested resource is not found.", response = Error.class),
         @ApiResponse(code = 500, message = "Internal server error.", response = Error.class)
     })
-    public Response organizationsOrganizationIdGet(@ApiParam(value = "ID of the organization.",required=true) @PathParam("organization-id") String organizationId,     @Valid@ApiParam(value = "Returns the organization details along with permissions assigned for the requested user in this organization.", defaultValue="false") @DefaultValue("false")  @QueryParam("includePermissions") Boolean includePermissions) {
+    public Response organizationsOrganizationIdGet(@ApiParam(value = "ID of the organization.",required=true) @PathParam("organization-id") String organizationId,     @Valid@ApiParam(value = "Returns the organization details along with permissions assigned for the requested user in this organization.", defaultValue="false") @DefaultValue("false")  @QueryParam("includePermissions") Boolean includePermissions,     @Valid@ApiParam(value = "If true, returns the extended organization response structure.", defaultValue="false") @DefaultValue("false")  @QueryParam("name-only") Boolean nameOnly) {
 
-        return delegate.organizationsOrganizationIdGet(organizationId,  includePermissions );
+        return delegate.organizationsOrganizationIdGet(organizationId,  includePermissions,  nameOnly );
     }
 
     @Valid
@@ -427,10 +426,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Patch an organization property by ID. Patch is supported only for key-value pairs.", notes = "This API provides the capability to update an organization property using patch request. Organization patch is supported only for key-value pairs.", response = OrganizationResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationResponse.class),
@@ -451,10 +450,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Update an organization by ID.", notes = "This API provides the capability to update an organization by its id.", response = OrganizationResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = OrganizationResponse.class),
@@ -474,11 +473,11 @@ public class OrganizationsApi  {
     @Path("/self")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Update organization details of the currently accessing organization.", notes = "This API updates the editable fields of the organization associated with the currently accessing organization. Using this API, the organization's name can be updated. For root organizations, the organization version can also be updated.  <b>Scopes (Permissions) required:</b> `internal_organization_update` ", response = OrganizationResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
+    @ApiOperation(value = "Update organization details of the currently accessing organization.", notes = "This API updates the editable fields of the organization associated with the currently accessing organization.  Using this API, the organization's name can be updated. For root organizations, the organization version can  also be updated.  <b>Scopes (Permissions) required:</b> `internal_organization_update` ", response = OrganizationResponse.class, authorizations = {
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successfully updated organization.", response = OrganizationResponse.class),
@@ -498,10 +497,10 @@ public class OrganizationsApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @ApiOperation(value = "Share application from the parent organization to given organization ", notes = "This API creates an internal application to delegate access from ", response = Void.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Application Management", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Ok", response = Void.class),
@@ -522,10 +521,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Stop sharing an application to a organization. ", notes = "This API provides the capability to stop sharing an application to an organization by providing its ID. ", response = Void.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Application Management", })
     @ApiResponses(value = { 
         @ApiResponse(code = 204, message = "Successfully deleted", response = Void.class),
@@ -546,10 +545,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Stop sharing an application with all sub-organizations. ", notes = "This API provides the capability to stop sharing an application to all organizations the application is shared to. ", response = Void.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Application Management", })
     @ApiResponses(value = { 
         @ApiResponse(code = 204, message = "Successfully deleted", response = Void.class),
@@ -570,10 +569,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "List of organizations that the application is shared to. ", notes = "This API returns the list of organizations that the application is shared to. ", response = SharedOrganizationsResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Application Management", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = SharedOrganizationsResponse.class),
@@ -594,10 +593,10 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "Stop sharing an application with all sub-organizations. ", notes = "This API provides the capability to stop sharing an application to all organizations the application is shared to. ", response = Void.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
+        }),
+        @Authorization(value = "BasicAuth")
     }, tags={ "Organization Application Management", })
     @ApiResponses(value = { 
         @ApiResponse(code = 204, message = "Successfully deleted", response = Void.class),
@@ -618,11 +617,11 @@ public class OrganizationsApi  {
     
     @Produces({ "application/json" })
     @ApiOperation(value = "List of shared applications along with its organization. ", notes = "This API returns the list of shared app ids along with the shared organization id. ", response = SharedApplicationsResponse.class, authorizations = {
-        @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
-        })
-    }, tags={ "Organization Application Management" })
+        }),
+        @Authorization(value = "BasicAuth")
+    }, tags={ "Organization Application Management", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successful response", response = SharedApplicationsResponse.class),
         @ApiResponse(code = 400, message = "Invalid input in the request.", response = Error.class),

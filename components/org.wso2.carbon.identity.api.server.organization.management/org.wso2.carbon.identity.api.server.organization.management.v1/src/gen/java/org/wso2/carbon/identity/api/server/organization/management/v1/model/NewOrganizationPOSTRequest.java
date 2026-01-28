@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, WSO2 LLC. (http://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -22,9 +22,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.validation.constraints.*;
 
 
@@ -33,59 +30,31 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 
-public class DiscoveryAttribute  {
+public class NewOrganizationPOSTRequest  implements OrganizationRequest{
   
-    private String type;
-    private List<String> values = null;
-
+    private String newOrgName;
 
     /**
     **/
-    public DiscoveryAttribute type(String type) {
+    public NewOrganizationPOSTRequest newOrgName(String newOrgName) {
 
-        this.type = type;
+        this.newOrgName = newOrgName;
         return this;
     }
     
-    @ApiModelProperty(example = "emailDomain", required = true, value = "")
-    @JsonProperty("type")
+    @ApiModelProperty(example = "XYZ Builders", required = true, value = "")
+    @JsonProperty("newOrgName")
     @Valid
-    @NotNull(message = "Property type cannot be null.")
+    @NotNull(message = "Property newOrgName cannot be null.")
 
-    public String getType() {
-        return type;
+    public String getNewOrgName() {
+        return newOrgName;
     }
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-    **/
-    public DiscoveryAttribute values(List<String> values) {
-
-        this.values = values;
-        return this;
-    }
-    
-    @ApiModelProperty(value = "")
-    @JsonProperty("values")
-    @Valid
-    public List<String> getValues() {
-        return values;
-    }
-    public void setValues(List<String> values) {
-        this.values = values;
+    public void setNewOrgName(String newOrgName) {
+        this.newOrgName = newOrgName;
     }
 
-    public DiscoveryAttribute addValuesItem(String valuesItem) {
-        if (this.values == null) {
-            this.values = new ArrayList<>();
-        }
-        this.values.add(valuesItem);
-        return this;
-    }
 
-    
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -96,24 +65,22 @@ public class DiscoveryAttribute  {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DiscoveryAttribute discoveryAttribute = (DiscoveryAttribute) o;
-        return Objects.equals(this.type, discoveryAttribute.type) &&
-            Objects.equals(this.values, discoveryAttribute.values);
+        NewOrganizationPOSTRequest newOrganizationPOSTRequest = (NewOrganizationPOSTRequest) o;
+        return Objects.equals(this.newOrgName, newOrganizationPOSTRequest.newOrgName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, values);
+        return Objects.hash(newOrgName);
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("class DiscoveryAttribute {\n");
+        sb.append("class NewOrganizationPOSTRequest {\n");
         
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    values: ").append(toIndentedString(values)).append("\n");
+        sb.append("    newOrgName: ").append(toIndentedString(newOrgName)).append("\n");
         sb.append("}");
         return sb.toString();
     }

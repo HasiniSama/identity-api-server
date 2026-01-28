@@ -31,6 +31,7 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetO
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.GetOrganizationResponseAncestorPath;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.Link;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.MetaAttributesResponse;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.NewOrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationCheckResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryAttributes;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationDiscoveryCheckPOSTRequest;
@@ -42,6 +43,7 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Orga
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPOSTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPUTRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationPatchRequestItem;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationRequest;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsDiscoveryResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.OrganizationsResponse;
@@ -49,6 +51,7 @@ import org.wso2.carbon.identity.api.server.organization.management.v1.model.Pare
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.SharedApplicationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.SharedApplicationsResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.model.SharedOrganizationsResponse;
+import org.wso2.carbon.identity.api.server.organization.management.v1.model.ShortOrganizationResponse;
 import org.wso2.carbon.identity.api.server.organization.management.v1.util.OrganizationManagementEndpointUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.organization.discovery.service.OrganizationDiscoveryManager;
@@ -209,11 +212,16 @@ public class OrganizationManagementService {
      * @param organizationId Unique identifier for the requested organization to be fetched.
      * @return Requested organization details.
      */
-    public Response getOrganization(String organizationId, Boolean includePermissions) {
+    public Response getOrganization(String organizationId, Boolean includePermissions, Boolean nameOnly) {
 
         try {
             Organization organization = organizationManager.getOrganization(organizationId,
                     false, Boolean.TRUE.equals(includePermissions), true);
+            if (nameOnly) {
+                ShortOrganizationResponse organizationResponse = new ShortOrganizationResponse();
+                organizationResponse.setOrgName(organization.getName());
+                return Response.ok().entity(organizationResponse).build();
+            }
             return Response.ok().entity(getOrganizationResponseWithPermission(organization)).build();
         } catch (OrganizationManagementClientException e) {
             return OrganizationManagementEndpointUtil.handleClientErrorResponse(e, LOG);
@@ -267,14 +275,22 @@ public class OrganizationManagementService {
     /**
      * Add an organization.
      *
-     * @param organizationPOSTRequest Add organization request.
+     * @param organizationRequest Add organization request.
      * @return The newly created organization.
      */
-    public Response addOrganization(OrganizationPOSTRequest organizationPOSTRequest) {
+    public Response addOrganization(OrganizationRequest organizationRequest) {
 
         try {
-            Organization organization = organizationManager.addOrganization(getOrganizationFromPostRequest
-                    (organizationPOSTRequest));
+            Organization organization;
+            if (organizationRequest instanceof OrganizationPOSTRequest) {
+                organization = organizationManager.addOrganization(getOrganizationFromPostRequest
+                        ((OrganizationPOSTRequest) organizationRequest));
+            } else if (organizationRequest instanceof NewOrganizationPOSTRequest) {
+                organization = organizationManager.addOrganization(getOrganizationFromNewPostRequest
+                        ((NewOrganizationPOSTRequest) organizationRequest));
+            } else {
+                throw new RuntimeException();
+            }
             String organizationId = organization.getId();
             return Response.created(OrganizationManagementEndpointUtil.getResourceLocation(organizationId)).entity
                     (getOrganizationResponse(organization)).build();
@@ -677,6 +693,17 @@ public class OrganizationManagementService {
             organization.setAttributes(organizationAttributes.stream().map(attribute ->
                     new OrganizationAttribute(attribute.getKey(), attribute.getValue())).collect(Collectors.toList()));
         }
+        return organization;
+    }
+
+    private Organization getOrganizationFromNewPostRequest(NewOrganizationPOSTRequest newOrganizationPOSTRequest) {
+
+        String organizationId = generateUniqueID();
+        Organization organization = new TenantTypeOrganization(organizationId);
+        organization.setId(organizationId);
+        organization.setName(newOrganizationPOSTRequest.getNewOrgName());
+        organization.setStatus(OrganizationManagementConstants.OrganizationStatus.ACTIVE.toString());
+        organization.setType(OrganizationResponse.TypeEnum.TENANT.toString());
         return organization;
     }
 
