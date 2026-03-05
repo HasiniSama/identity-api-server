@@ -2530,8 +2530,12 @@ public class ServerIdpManagementService {
                     jitProvisionConfig.getProvisioningUserStore() : UserCoreConstants.PRIMARY_DEFAULT_DOMAIN_NAME;
             jitConfig.setUserstore(provisioningUserStore);
             jitConfig.setAssociateLocalUser(jitProvisionConfig.isAssociateLocalUserEnabled());
-            String attributeSyncMethod = StringUtils.isNotBlank(jitProvisionConfig.getAttributeSyncMethod()) ?
-                    jitProvisionConfig.getAttributeSyncMethod() : FrameworkConstants.OVERRIDE_ALL;
+            String attributeSyncMethod = jitProvisionConfig.getAttributeSyncMethod();
+            if (StringUtils.isBlank(attributeSyncMethod)) {
+                attributeSyncMethod = IdPManagementUtil.isPreserveLocallyAddedClaims()
+                        ? FrameworkConstants.PRESERVE_LOCAL
+                        : FrameworkConstants.OVERRIDE_ALL;
+            }
             jitConfig.setAttributeSyncMethod(JustInTimeProvisioning.AttributeSyncMethodEnum
                     .valueOf(attributeSyncMethod));
         }
