@@ -20,9 +20,6 @@ package org.wso2.carbon.identity.api.server.organization.agent.sharing.managemen
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.cxf.jaxrs.impl.UriInfoImpl;
-import org.apache.cxf.jaxrs.utils.JAXRSUtils;
-import org.apache.cxf.message.Message;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants;
 import org.wso2.carbon.identity.api.server.organization.agent.sharing.management.v1.model.AgentCriteria;
@@ -47,6 +44,9 @@ import org.wso2.carbon.identity.organization.management.organization.agent.shari
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.constant.RoleAssignmentMode;
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.exception.AgentSharingMgtClientException;
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.exception.AgentSharingMgtException;
+import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.agentcriteria.AgentCriteriaType;
+import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.agentcriteria.AgentIdList;
+import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.AgentSharePatchDO;
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.GeneralAgentShareDO;
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.GeneralAgentUnshareDO;
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.GetAgentSharedOrgsDO;
@@ -58,10 +58,7 @@ import org.wso2.carbon.identity.organization.management.organization.agent.shari
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.SelectiveAgentShareDO;
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.SelectiveAgentShareOrgDetailsDO;
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.SelectiveAgentUnshareDO;
-import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.AgentSharePatchDO;
 import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.dos.SharingModeDO;
-import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.agentcriteria.AgentCriteriaType;
-import org.wso2.carbon.identity.organization.management.organization.agent.sharing.models.agentcriteria.AgentIdList;
 import org.wso2.carbon.identity.organization.resource.sharing.policy.management.constant.PolicyEnum;
 
 import java.nio.charset.StandardCharsets;
@@ -73,10 +70,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.AGENT_IDS;
+import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_EMPTY_AGENT_IDS;
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_EMPTY_AGENT_SHARE_PATCH_PATH;
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_INVALID_CURSOR;
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_INVALID_LIMIT;
@@ -113,10 +109,6 @@ public class AgentsApiServiceCore {
 
         this.agentSharingPolicyHandlerService = agentSharingPolicyHandlerService;
     }
-
-    // -------------------------------------------------------------------------
-    // Public methods corresponding to API endpoints
-    // -------------------------------------------------------------------------
 
     /**
      * Shares agents with the organizations specified in the request.
@@ -310,10 +302,6 @@ public class AgentsApiServiceCore {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Private helpers — build backend DOs from API request models
-    // -------------------------------------------------------------------------
-
     private SelectiveAgentShareDO populateSelectiveAgentShareDO(
             AgentShareSelectedRequestBody agentShareSelectedRequestBody) throws AgentSharingMgtClientException {
 
@@ -395,10 +383,6 @@ public class AgentsApiServiceCore {
         return agentSharePatchDO;
     }
 
-    // -------------------------------------------------------------------------
-    // Private helpers — map backend response DOs to API response models
-    // -------------------------------------------------------------------------
-
     private AgentSharedOrganizationsResponse mapAgentSharedOrganizationsResponse(
             ResponseAgentSharedOrgsDO responseAgentSharedOrgsDO, String agentId, String filter, Integer limit,
             Boolean recursive, String attributes) {
@@ -417,10 +401,9 @@ public class AgentsApiServiceCore {
         }
         response.setOrganizations(orgs);
 
-        List<Link> links =
-                buildPaginationLinks(responseAgentSharedOrgsDO, agentId, filter, limit, recursive, attributes);
+        List<Link> links = PaginationLinkBuilder.buildPaginationLinks(
+                responseAgentSharedOrgsDO, agentId, filter, limit, recursive, attributes);
         response.setLinks(links);
-
         return response;
     }
 
@@ -492,81 +475,20 @@ public class AgentsApiServiceCore {
         return role;
     }
 
-    private List<Link> buildPaginationLinks(ResponseAgentSharedOrgsDO result, String agentId, String filter,
-                                            Integer limit, Boolean recursive, String attributes) {
-
-        UriInfo uriInfo = getCurrentRequestUriInfo();
-        List<Link> links = new ArrayList<>();
-
-        int nextCursor = result.getNextPageCursor();
-        if (nextCursor > 0) {
-            links.add(new Link()
-                    .rel("next")
-                    .href(buildSharedOrgsPageLink(uriInfo, agentId, filter, limit, recursive, attributes,
-                            encodeCursor(nextCursor), null)));
-        }
-        int prevCursor = result.getPreviousPageCursor();
-        if (prevCursor > 0) {
-            links.add(new Link()
-                    .rel("previous")
-                    .href(buildSharedOrgsPageLink(uriInfo, agentId, filter, limit, recursive, attributes,
-                            null, encodeCursor(prevCursor))));
-        }
-        return links;
-    }
-
-    private String buildSharedOrgsPageLink(UriInfo uriInfo, String agentId, String filter, Integer limit,
-                                           Boolean recursive, String attributes, String after, String before) {
-
-        if (uriInfo == null) {
-            return buildRelativeSharedOrgsPageLink(agentId, filter, limit, recursive, attributes, after, before);
-        }
-
-        UriBuilder builder = uriInfo.getBaseUriBuilder()
-                .path("agents").path(agentId).path("share");
-        if (limit != null) builder.queryParam("limit", limit);
-        if (filter != null && !filter.isEmpty()) builder.queryParam("filter", filter);
-        if (recursive != null) builder.queryParam("recursive", recursive);
-        if (attributes != null && !attributes.isEmpty()) builder.queryParam("attributes", attributes);
-        if (after != null && !after.isEmpty()) builder.queryParam("after", after);
-        else if (before != null && !before.isEmpty()) builder.queryParam("before", before);
-
-        return builder.build().toString();
-    }
-
-    private String buildRelativeSharedOrgsPageLink(String agentId, String filter, Integer limit, Boolean recursive,
-                                                   String attributes, String after, String before) {
-
-        String base = "/o/api/server/v1/agents/" + urlEncode(agentId) + "/share";
-        List<String> qp = new ArrayList<>();
-        if (limit != null) qp.add("limit=" + limit);
-        if (filter != null && !filter.isEmpty()) qp.add("filter=" + urlEncode(filter));
-        if (recursive != null) qp.add("recursive=" + recursive);
-        if (attributes != null && !attributes.isEmpty()) qp.add("attributes=" + urlEncode(attributes));
-        if (after != null && !after.isEmpty()) qp.add("after=" + urlEncode(after));
-        else if (before != null && !before.isEmpty()) qp.add("before=" + urlEncode(before));
-
-        return qp.isEmpty() ? base : base + "?" + String.join("&", qp);
-    }
-
-    // -------------------------------------------------------------------------
-    // Private helpers — criteria, role assignment, patch ops
-    // -------------------------------------------------------------------------
-
     private Map<String, AgentCriteriaType> buildAgentCriteriaFromRequest(AgentCriteria agentCriteria)
             throws AgentSharingMgtClientException {
 
         if (agentCriteria == null) {
             throw makeRequestError(ERROR_MISSING_AGENT_CRITERIA);
         }
-        Map<String, AgentCriteriaType> criteriaMap = new HashMap<>();
-        if (agentCriteria.getAgentIds() != null && !agentCriteria.getAgentIds().isEmpty()) {
-            criteriaMap.put(AGENT_IDS, new AgentIdList(agentCriteria.getAgentIds()));
-        }
-        if (criteriaMap.isEmpty()) {
+        List<String> agentIds = agentCriteria.getAgentIds();
+        if (agentIds == null) {
             throw makeRequestError(ERROR_MISSING_AGENT_CRITERIA);
         }
-        return criteriaMap;
+        if (agentIds.isEmpty()) {
+            throw makeRequestError(ERROR_EMPTY_AGENT_IDS);
+        }
+        return new HashMap<>(Map.of(AGENT_IDS, new AgentIdList(agentIds)));
     }
 
     private RoleAssignmentDO buildRoleAssignmentFromRequest(RoleAssignment roleAssignment) {
@@ -621,7 +543,7 @@ public class AgentsApiServiceCore {
                         patchOperations.add(patchOperationDO);
                     }
                 } catch (IllegalArgumentException e) {
-                    throw makeRequestError(ERROR_UNSUPPORTED_AGENT_SHARE_POLICY);
+                    throw makeRequestError(ERROR_UNSUPPORTED_AGENT_SHARE_PATCH_OPERATION);
                 }
             }
         }
@@ -666,21 +588,6 @@ public class AgentsApiServiceCore {
                 .collect(java.util.stream.Collectors.toList());
     }
 
-    private UriInfo getCurrentRequestUriInfo() {
-
-        Message message = JAXRSUtils.getCurrentMessage();
-        if (message == null) {
-            return null;
-        }
-        return new UriInfoImpl(message);
-    }
-
-    private String encodeCursor(int cursor) {
-
-        return Base64.getEncoder()
-                .encodeToString(String.valueOf(cursor).getBytes(StandardCharsets.UTF_8));
-    }
-
     private int decodeCursor(String cursor) {
 
         if (cursor == null) {
@@ -689,19 +596,6 @@ public class AgentsApiServiceCore {
         String decoded = new String(Base64.getDecoder().decode(cursor), StandardCharsets.UTF_8);
         return Integer.parseInt(decoded);
     }
-
-    private String urlEncode(String value) {
-
-        try {
-            return java.net.URLEncoder.encode(value, "UTF-8");
-        } catch (java.io.UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 encoding not supported", e);
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // Private helpers — build responses and errors
-    // -------------------------------------------------------------------------
 
     private ProcessSuccessResponse getProcessSuccessResponse(String details) {
 
