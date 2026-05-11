@@ -89,6 +89,10 @@ public class AgentSharingMgtConstants {
         ERROR_INVALID_CURSOR("60012",
                 "Invalid cursor value.",
                 "The cursor value provided in the request is invalid. Please provide a valid cursor value."),
+        ERROR_UNSUPPORTED_AGENT_SHARE_PATCH_OPERATION("60013",
+                "Unsupported agent share patch operation.",
+                "The provided patch operation to update attributes of shared agent is not supported. " +
+                        "Please provide a valid patch operation."),
 
         // Server errors.
         ERROR_INITIATING_AGENTS_API_SERVICE("65001",

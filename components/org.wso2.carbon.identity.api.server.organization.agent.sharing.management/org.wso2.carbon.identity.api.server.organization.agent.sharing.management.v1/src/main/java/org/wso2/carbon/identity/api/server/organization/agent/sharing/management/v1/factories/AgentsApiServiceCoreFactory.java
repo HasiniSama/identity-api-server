@@ -44,6 +44,9 @@ public class AgentsApiServiceCoreFactory {
                     "AgentSharingPolicyHandlerService is not available from the OSGi context.");
         }
         SERVICE = new AgentsApiServiceCore(agentSharingPolicyHandlerService);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Successfully initialized AgentsApiServiceCore.");
+        }
     }
 
     /**

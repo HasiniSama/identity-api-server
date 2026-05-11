@@ -81,7 +81,7 @@ import static org.wso2.carbon.identity.api.server.organization.agent.sharing.man
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_INVALID_CURSOR;
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_INVALID_LIMIT;
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_MISSING_AGENT_CRITERIA;
-import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_MISSING_AGENT_IDS;
+import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_UNSUPPORTED_AGENT_SHARE_PATCH_OPERATION;
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_UNSUPPORTED_AGENT_SHARE_PATCH_PATH;
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.ERROR_UNSUPPORTED_AGENT_SHARE_POLICY;
 import static org.wso2.carbon.identity.api.server.organization.agent.sharing.management.common.constants.AgentSharingMgtConstants.ErrorMessage.INVALID_AGENT_SHARE_PATCH_REQUEST_BODY;
@@ -265,11 +265,6 @@ public class AgentsApiServiceCore {
                     PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain() +
                     " of agent: " + agentId);
         }
-        if (agentId == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(buildErrorResponse(makeRequestError(ERROR_MISSING_AGENT_IDS))).build();
-        }
-
         try {
             UUID.fromString(agentId);
         } catch (IllegalArgumentException e) {
@@ -616,13 +611,17 @@ public class AgentsApiServiceCore {
         List<PatchOperationDO> patchOperations = new ArrayList<>();
         if (operations != null) {
             for (AgentSharingPatchOperation operation : operations) {
-                if (operation != null) {
-                    PatchOperationDO patchOperationDO = new PatchOperationDO();
-                    patchOperationDO.setOperation(AgentSharePatchOperation.fromValue(operation.getOp()));
-                    patchOperationDO.setPath(operation.getPath());
-                    patchOperationDO.setValues(
-                            buildPatchOperationValuesFromRequest(operation.getPath(), operation.getValue()));
-                    patchOperations.add(patchOperationDO);
+                try {
+                    if (operation != null) {
+                        PatchOperationDO patchOperationDO = new PatchOperationDO();
+                        patchOperationDO.setOperation(AgentSharePatchOperation.fromValue(operation.getOp()));
+                        patchOperationDO.setPath(operation.getPath());
+                        patchOperationDO.setValues(
+                                buildPatchOperationValuesFromRequest(operation.getPath(), operation.getValue()));
+                        patchOperations.add(patchOperationDO);
+                    }
+                } catch (IllegalArgumentException e) {
+                    throw makeRequestError(ERROR_UNSUPPORTED_AGENT_SHARE_POLICY);
                 }
             }
         }
